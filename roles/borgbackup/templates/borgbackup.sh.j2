@@ -15,7 +15,7 @@ do
     [[ ${logger} == "true" ]] && log "`date`: Beginning borg create @ {{host}}"
     borg create -v --stats --list ssh://backups@{{host}}:22/~/{{inventory_hostname}}/::'{now:%Y-%m-%d_%H:%M}' $backupdirs
     [[ ${logger} == "true" ]] && log "`date`: Beginning borg prune @ {{host}}"
-    borg prune --list --keep-within=1d --keep-daily=10 --keep-weekly=6  ssh://backups@backups.stored.cc:22/~/{{inventory_hostname}}/
+    borg prune --list --keep-within=1d --keep-daily=10 --keep-weekly=6  ssh://backups@{{host}}:22/~/{{inventory_hostname}}/
 {% endfor %}
 
     sleep 7200
