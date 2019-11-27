@@ -1,0 +1,7 @@
+[backeduphosts]
+host1.example.com
+host2.example.com
+host3.example.com
+
+[backupserver]
+backuphost1.example.com

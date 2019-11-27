@@ -1,0 +1,11 @@
+---
+
+- hosts: backeduphosts
+  gather_facts: no
+  roles:
+    - {name: borgbackup , tags: [borgbackup, bootstrap, backups]}
+
+- hosts: backupserver
+  gather_facts: no
+  roles:
+    - {name: backupserver , tags: [backupserver, backups]}

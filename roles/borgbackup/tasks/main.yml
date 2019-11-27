@@ -1,0 +1,33 @@
+---
+# This role deploys the borg backup service
+
+- name: Template borgbackup.sh
+  template:
+    src: templates/borgbackup.sh.j2
+    dest: /usr/local/bin/borgbackup.sh
+    owner: root
+    group: root
+    mode: 0744
+
+- name: Copy backup.service in place
+  copy:
+   src: templates/backup.service
+   dest: /etc/systemd/system/backup.service
+   owner: root
+   group: root
+   mode: 0744
+
+- name: Ensure Borg backup service is started and running
+  service:
+   name=backup
+     state=restarted
+     enabled=yes
+
+- name: Retrieve SSH public key
+  slurp:
+    src: /root/.ssh/id_rsa.pub
+  register: ansible_public_key_slurp
+
+- name: Save SSH public key to fact
+  set_fact:
+    public_key: "{{ ansible_public_key_slurp.content | b64decode }}"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+logger="true"
+export BORG_UNKNOWN_UNENCRYPTED_REPO_ACCESS_IS_OK=yes
+while true
+do
+    function log {
+        log="/var/log/backup.log"
+        echo $1
+        echo $1 >> ${log}
+    }
+
+    backupdirs="/root /opt /usr/local/bin"
+
+{% for host in groups['backupserver'] %}
+    [[ ${logger} == "true" ]] && log "`date`: Beginning borg create @ {{host}}"
+    borg create -v --stats --list ssh://backups@{{host}}:22/~/{{inventory_hostname}}/::'{now:%Y-%m-%d_%H:%M}' $backupdirs
+    [[ ${logger} == "true" ]] && log "`date`: Beginning borg prune @ {{host}}"
+    borg prune --list --keep-within=1d --keep-daily=10 --keep-weekly=6  ssh://backups@backups.stored.cc:22/~/{{inventory_hostname}}/
+{% endfor %}
+
+    sleep 7200
+done

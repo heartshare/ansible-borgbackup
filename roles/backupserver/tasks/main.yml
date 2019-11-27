@@ -1,0 +1,14 @@
+---
+# This role deploys the borg backup service
+
+- name: ensure backup repositorys are in place
+  shell: "[ -e /storage/backups/{{item}}/README ] && exit 0 || su backups -c '/usr/bin/borg init --encryption=none /storage/backups/{{item}}'"
+  with_inventory_hostnames: backeduphosts
+
+- name: Template authorized_keys
+  template:
+    src: templates/authorized_keys.j2
+    dest: /storage/backups/.ssh/authorized_keys
+    owner: backups
+    group: backups
+    mode: 0600

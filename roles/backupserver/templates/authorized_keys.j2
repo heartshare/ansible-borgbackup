@@ -1,0 +1,5 @@
+{% for host in groups['backeduphosts'] %}
+{% if hostvars[host]['public_key'] is defined %}
+command="borg serve --restrict-to-path /storage/backups/{{host}}" {{hostvars[host]['public_key']}}
+{% endif %}
+{% endfor %}
